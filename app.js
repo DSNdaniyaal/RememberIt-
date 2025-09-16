@@ -101,11 +101,28 @@ app.post("/", function(req, res){
     item.save();
     res.redirect("/");
   } else {
-    List.findOne({name: listName},function(err,foundList){
+    List.findOne({ name: listName }, function (err, foundList) {
+      if (err) {
+        console.error("Error while finding list:", err);
+        return res.status(500).send("Something went wrong"); 
+      }
+
+      if (!foundList) {
+        console.log("List not found:", listName);
+        return res.redirect("/");
+      }
+
       foundList.items.push(item);
-      foundList.save();
-      res.redirect("/"+listName);
-    });
+      foundList.save(function (saveErr) {
+        if (saveErr) {
+          console.error("Error while saving list:", saveErr);
+          return res.status(500).send("Failed to save list");
+        }
+        console.log("Added successfully.");
+        res.redirect("/" + listName);
+      });
+  });
+
   }
 });
 
