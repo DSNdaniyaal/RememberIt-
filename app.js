@@ -140,7 +140,7 @@ app.post("/delete",function(req,res){
 } else {
   List.findOneAndUpdate({name : listName},{$pull : {items: {_id: checkeditemId}}},function(err,foundList){
     if(!err){
-      console.log("deleted successfully.");
+      console.log("removed from list successfully.");
       res.redirect("/"+listName) ;
     }
   });
